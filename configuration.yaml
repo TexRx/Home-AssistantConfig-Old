@@ -1,0 +1,171 @@
+homeassistant:
+  name: Home
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: 0
+  unit_system: !secret unit_system
+  time_zone: !secret home_timezone
+  customize: !include customize.yaml
+
+# show hassio in left nav
+hassio:
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Weather prediction
+sensor:
+  - platform: yr
+  - platform: pi_hole
+    host: !secret pihole_host
+    monitored_conditions: [ads_blocked_today, dns_queries_today, domains_being_blocked, unique_clients]
+  - platform: template
+    sensors:
+      nextsunrise:
+        friendly_name: 'Next Sunrise'
+        value_template: >
+          {{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom(' %I:%M%p') | replace(" 0", "") }}
+        entity_picture_template: >-
+            !secret daytime_image_path
+        icon_template: mdi:weather-sunset-up
+      nextsunset:
+        friendly_name: 'Next Sunset'
+        value_template: >
+          {{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom(' %I:%M%p') | replace(" 0", "") }}
+        entity_picture_template: >-
+            !secret nighttime_image_path
+        icon_template: mdi:weather-sunset-down
+  - platform: darksky
+    api_key: !secret darksky_api_key
+    monitored_conditions:
+      - icon
+      - temperature
+      - precip_type
+      - precip_probability
+      - humidity
+      - wind_speed
+      - nearest_storm_distance
+  - platform: amcrest
+
+# Text to speech
+tts:
+  - platform: google
+
+# Cloud
+cloud:
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+panel_iframe:
+  pihole:
+    title: Pi-hole
+    icon: mdi:block-helper
+    url: !secret pihole_frame_url
+
+media_player:
+  - platform: braviatv
+    host: !secret mp_braviatv_host
+  - platform: roku
+    host: !secret mp_roku_living_room_host
+  - platform: roku
+    host: !secret mp_roku_game_room_host
+  - platform: denonavr
+    host: !secret mp_denonavr_host
+    name: Denon X4000
+    show_all_sources: False
+    timeout: 5
+    zones:
+      - zone: Zone2
+        name: Denon Zone 2
+      - zone: Zone3
+        name: Denon Zone 3
+
+amcrest:
+ - host: !secret back_porch_camera_host
+   name: Back Porch Camera
+   username: !secret back_porch_camera_username
+   password: !secret back_porch_camera_password
+   sensors:
+     - motion_detector
+   switches:
+     - motion_detection
+ - host: !secret front_porch_camera_host
+   name: Front Porch Camera
+   username: !secret front_porch_camera_username
+   password: !secret front_porch_camera_password
+   stream_source: snapshot
+   sensors:
+     - motion_detector
+   switches:
+     - motion_detection
+
+isy994:
+  host: !secret isy_host
+  username: !secret isy_username
+  password: !secret isy_password
+
+climate:
+  - platform: !secret climate_platform_name
+    username: !secret climate_platform_username
+    password: !secret climate_platform_password
+    region: us
+    scan_interval: 600
+    away_cool_temperature: 80
+    away_heat_temperature: 62
+
+device_tracker:
+  - platform: !secret device_tracking_platform
+    hosts: !secret device_tracking_hosts
+    home_interval: 15
+    consider_home: 180 # 3 minutes
+    new_device_defaults:
+      track_new_devices: True
+      hide_if_away: False
+    
+zone:
+  - name: !secret cw_work_zone_name
+    latitude: !secret cw_work_zone_latitude
+    longitude: !secret cw_work_zone_longitude
+    radius: 250
+    icon: mdi:work
+  - name: !secret iw_work_zone_name
+    latitude: !secret iw_work_zone_latitude
+    longitude: !secret iw_work_zone_longitude
+    radius: 250
+    icon: mdi:work
+  - name: !secret ow_school_zone_name
+    latitude: !secret ow_school_zone_latitude
+    longitude: !secret ow_school_zone_longitude
+    radius: 300
+    icon: mdi:school
