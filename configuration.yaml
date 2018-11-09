@@ -1,5 +1,5 @@
 homeassistant:
-  name: Home
+  name: Hal 9000
   latitude: !secret home_latitude
   longitude: !secret home_longitude
   elevation: 0
@@ -152,7 +152,7 @@ device_tracker:
     new_device_defaults:
       track_new_devices: True
       hide_if_away: False
-    
+
 zone:
   - name: !secret cw_work_zone_name
     latitude: !secret cw_work_zone_latitude
