@@ -7,9 +7,6 @@ homeassistant:
   time_zone: !secret home_timezone
   customize: !include customize.yaml
 
-# show hassio in left nav
-hassio:
-
 # Enables the frontend
 frontend:
 
@@ -44,37 +41,27 @@ map:
 
 # Weather prediction
 sensor:
-  - platform: yr
-  - platform: pi_hole
-    host: !secret pihole_host
-    monitored_conditions: [ads_blocked_today, dns_queries_today, domains_being_blocked, unique_clients]
+  # - platform: yr
+  # - platform: pi_hole
+  #   host: !secret pihole_host
+  #   monitored_conditions: [ads_blocked_today, dns_queries_today, domains_being_blocked, unique_clients]
   - platform: template
     sensors:
-      nextsunrise:
-        friendly_name: 'Next Sunrise'
+      harmonyhub:
         value_template: >
-          {{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom(' %I:%M%p') | replace(" 0", "") }}
-        entity_picture_template: >-
-            !secret daytime_image_path
-        icon_template: mdi:weather-sunset-up
-      nextsunset:
-        friendly_name: 'Next Sunset'
-        value_template: >
-          {{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom(' %I:%M%p') | replace(" 0", "") }}
-        entity_picture_template: >-
-            !secret nighttime_image_path
-        icon_template: mdi:weather-sunset-down
-  - platform: darksky
-    api_key: !secret darksky_api_key
-    monitored_conditions:
-      - icon
-      - temperature
-      - precip_type
-      - precip_probability
-      - humidity
-      - wind_speed
-      - nearest_storm_distance
-  - platform: amcrest
+          {{ states.remote.harmony_hub.attributes.current_activity }}
+        friendly_name: 'Harmony'
+  # - platform: darksky
+  #   api_key: !secret darksky_api_key
+  #   monitored_conditions:
+  #     - icon
+  #     - temperature
+  #     - precip_type
+  #     - precip_probability
+  #     - humidity
+  #     - wind_speed
+  #     - nearest_storm_distance
+  # - platform: amcrest
 
 # Text to speech
 tts:
@@ -93,13 +80,23 @@ panel_iframe:
     icon: mdi:block-helper
     url: !secret pihole_frame_url
 
+  rachio:
+    title: Rachio
+    url: "https://app.rach.io"
+    icon: mdi:water-pump
+
 media_player:
   - platform: braviatv
     host: !secret mp_braviatv_host
   - platform: roku
     host: !secret mp_roku_living_room_host
+    name: Living Room Roku
   - platform: roku
     host: !secret mp_roku_game_room_host
+    name: Gameroom Roku
+  - platform: roku
+    host: !secret mp_roku_natasha_host
+    name: Natasha's Roku
   - platform: denonavr
     host: !secret mp_denonavr_host
     name: Denon X4000
@@ -110,6 +107,51 @@ media_player:
         name: Denon Zone 2
       - zone: Zone3
         name: Denon Zone 3
+rachio:
+  api_key: !secret rachio_api_key
+
+remote:
+  - platform: harmony
+    name: Harmony Hub
+    host: 192.168.1.52
+
+isy994:
+  host: !secret isy_host
+  username: !secret isy_username
+  password: !secret isy_password
+
+ecobee:
+  api_key: !secret ecobee_api_key
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_api_key
+
+# device_tracker:
+#   - platform: !secret device_tracking_platform
+#     hosts: !secret device_tracking_hosts
+#     home_interval: 15
+#     consider_home: 180 # 3 minutes
+#     new_device_defaults:
+#       track_new_devices: False
+#       hide_if_away: False
+
+zone:
+  - name: !secret cw_work_zone_name
+    latitude: !secret cw_work_zone_latitude
+    longitude: !secret cw_work_zone_longitude
+    radius: 250
+    icon: mdi:office-building
+  - name: !secret iw_work_zone_name
+    latitude: !secret iw_work_zone_latitude
+    longitude: !secret iw_work_zone_longitude
+    radius: 250
+    icon: mdi:office-building
+  - name: !secret ow_school_zone_name
+    latitude: !secret ow_school_zone_latitude
+    longitude: !secret ow_school_zone_longitude
+    radius: 300
+    icon: mdi:chair-school
 
 amcrest:
  - host: !secret back_porch_camera_host
@@ -129,43 +171,3 @@ amcrest:
      - motion_detector
    switches:
      - motion_detection
-
-isy994:
-  host: !secret isy_host
-  username: !secret isy_username
-  password: !secret isy_password
-
-climate:
-  - platform: !secret climate_platform_name
-    username: !secret climate_platform_username
-    password: !secret climate_platform_password
-    region: us
-    scan_interval: 1000
-    away_cool_temperature: 84
-    away_heat_temperature: 62
-
-device_tracker:
-  - platform: !secret device_tracking_platform
-    hosts: !secret device_tracking_hosts
-    home_interval: 15
-    consider_home: 180 # 3 minutes
-    new_device_defaults:
-      track_new_devices: False
-      hide_if_away: False
-
-zone:
-  - name: !secret cw_work_zone_name
-    latitude: !secret cw_work_zone_latitude
-    longitude: !secret cw_work_zone_longitude
-    radius: 250
-    icon: mdi:work
-  - name: !secret iw_work_zone_name
-    latitude: !secret iw_work_zone_latitude
-    longitude: !secret iw_work_zone_longitude
-    radius: 250
-    icon: mdi:work
-  - name: !secret ow_school_zone_name
-    latitude: !secret ow_school_zone_latitude
-    longitude: !secret ow_school_zone_longitude
-    radius: 300
-    icon: mdi:school

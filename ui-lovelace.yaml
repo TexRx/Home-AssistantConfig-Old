@@ -1,4 +1,4 @@
-title: My Awesome Home
+title: House Wigley
 # Include external resources
 resources:
   - url: /local/my-custom-card.js
@@ -7,62 +7,143 @@ resources:
     type: css
 
 # Optional background for all views. Check https://developer.mozilla.org/en-US/docs/Web/CSS/background for more examples.
-background: center / cover no-repeat url("/background.png") fixed
+# background: center / cover no-repeat url("/background.png") fixed
 # Exclude entities from "Unused entities" view
-excluded_entities:
-  - weblink.router
+# excluded_entities:
+#   - weblink.router
 views:
-    # View tab title.
-  - title: Example
+  - title: Main
+    icon: mdi:castle
     # Optional unique id for direct access /lovelace/${id}
-    id: example
+    id: main
     # Optional background (overwrites the global background).
-    background: radial-gradient(crimson, skyblue)
+    # background: radial-gradient(crimson, skyblue)
     # Each view can have a different theme applied. Theme should be defined in the frontend.
     theme: dark-mode
     # The cards to show on this view.
     cards:
+      - type: entity-button
+        name: Front Door
+        entity: lock.front_door_lock
+        tap_action: toggle
+      - type: vertical-stack
+        cards:
+        - type: horizontal-stack
+          cards:
+          - type: light
+            entity: light.dkitchen_pendants
+            name: Island Lights
+          - type: light
+            entity: light.dkitchen_recessed
+            name: Kitchen Recessed
+          - type: light
+            entity: light.dkitchen_recessed_solo
+            name: Range Accent
+        - type: glance
+          name: Kitchen Accents
+          entities:
+            - entity: switch.ovent_cabinet_top
+              name: Cabinet Lights
+              tap_action: toggle
+              icon: mdi:lightbulb
+            - entity: switch.ovent_cabinet_bottom
+              name: Range Vent
+              tap_action: toggle
+              icon: mdi:power-socket-us
+      - type: horizontal-stack
+        cards:
+          - type: thermostat
+            entity: climate.main_floor
+          - type: thermostat
+            entity: climate.upstairs
+      - type: vertical-stack
+        cards:
+          - type: picture-glance
+            title: Denon Receiver
+            # entities:
+            #   - entity: media_player.denon_zone_2
+            #     name: Kitchen
+            #     icon: mdi:video-switch
+            #   - entity: media_player.denon_zone_3
+            #     name: Master Bedroom
+            #     icon: mdi:video-switch
+            image: /local/images/denon_avr-x4000.jpg
+          # - type: entities
+            entities:
+              - entity: media_player.denon_zone_2
+                name: Kitchen
+              - entity: media_player.denon_zone_3
+                name: Master Bedroom
+      - type: vertical-stack
+        cards:
+          - type: picture-glance
+            title: Sony Bravia
+            image: /local/images/sony_xbr-900d.jpg
+            entities:
+              - entity: media_player.sony_bravia_tv
+                name: Sony
+
+      - type: sensor
+        name: Harmony Hub
+        entity: sensor.harmonyhub
+        icon: mdi:remote
+        graph: none
+        height: 75
+
         # The filter card will filter entities for their state
-      - id: eea5347f568f433b92676588306496c3  # Automatically created id
-        type: entity-filter
+      # - type: entity-filter
+      #   entities:
+      #     - device_tracker.paulus
+      #     - device_tracker.anne_there
+      #   state_filter:
+      #     - home
+      #   card:
+      #     type: glance
+      #     title: People that are home
+
+      - type: weather-forecast
+        entity: weather.dark_sky
+
+      - type: map
         entities:
-          - device_tracker.paulus
-          - device_tracker.anne_there
-        state_filter:
-          - home
-        card:
-          type: glance
-          title: People that are home
+          - zone.home
+          - zone.corel
+          - zone.schwab
+          - zone.lake_travis_middle_school
 
-        # The picture entity card will represent an entity with a picture
-      - id: 5b97eefc095547cb95446445af6a5aa9  # Automatically created id
-        type: picture-entity
-        image: https://www.home-assistant.io/images/default-social.png
-        entity: light.bed_light
-
-    # Specify a tab icon if you want the view tab to be an icon.
-  - id: 1  # Automatically created id
-    icon: mdi:home-assistant
-    # Title of the view. Will be used as the tooltip for tab icon
-    title: Second view
+  - title: Lights
+    icon: mdi:lightbulb
+    id: Lights
     cards:
-        # Entities card will take a list of entities and show their state.
-      - id: 0748db3a5e134623b93d518c54b6fd89  # Automatically created id
-        type: entities
-        # Title of the entities card
-        title: Example
-        # The entities here will be shown in the same order as specified.
-        # Each entry is an entity ID or a map with extra options.
-        entities:
-          - light.kitchen
-          - switch.ac
-          - entity: light.living_room
-            # Override the name to use
-            name: LR Lights
+      - type: light
+        entity: light.dstairs2
+        name: Stairs Overhead Light
+      - type: light
+        entity: light.kpgameroom
+        name: Gameroom Lights
 
-        # The markdown card will render markdown text.
-      - id: e1abed4728fc41f3b0ac3efc46324f46  # Automatically created id
-        type: markdown
-        title: Lovelace
-        content: >
-          Welcome to your **Lovelace UI**.
+  - title: Outdoors
+    icon: mdi:water-pump
+    cards:
+      - type: glance
+        title: Irrigation
+        entities:
+          - entity: binary_sensor.rachio_online
+            name: Online
+          - entity: switch.rachio_in_standby_mode
+            name: Status
+          - entity: switch.rachio_back_fence_flowerbed
+            name: Back Yard Trees
+          - entity:  switch.rachio_back_flower_bed
+            name: Back Yard Flowers
+          - entity: switch.rachio_backyard_grass
+            name: Back Yard Grass
+          - entity: switch.rachio_front_lawn
+            name: Front Yard Grass
+          - entity: switch.rachio_front_porch_flower_bed
+            name: Front Yard Flowers
+          - entity: switch.rachio_right_front_lawn_and_garden
+            name: Front Right Grass & Flowers
+
+      # - type: iframe
+      #   url: https://app.rach.io
