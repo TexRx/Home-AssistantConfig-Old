@@ -1,5 +1,4 @@
 homeassistant:
-  name: Hal 9000
   latitude: !secret home_latitude
   longitude: !secret home_longitude
   elevation: 0
@@ -7,6 +6,10 @@ homeassistant:
   time_zone: !secret home_timezone
   customize: !include customize.yaml
 
+# as of Home assistant 0.84.2, we need to set the lovelace mode to yaml
+# because it is now a static html file by default
+lovelace:
+  mode: yaml
 # Enables the frontend
 frontend:
 
@@ -171,3 +174,24 @@ amcrest:
      - motion_detector
    switches:
      - motion_detection
+
+# Nest
+nest:
+  client_id: !secret nest_client_id
+  client_secret: !secret nest_client_secret
+
+# Groups
+
+group:
+  kitchen_recessed:
+    entities:
+      - light.dkitchen_recessed
+      - light.dkitchen_recessed_solo
+  kitchen:
+    name: Kitchen
+    entities:
+      - light.dkitchen_pendants
+      - group.kitchen_recessed
+      - switch.ovent_cabinet_top
+
+

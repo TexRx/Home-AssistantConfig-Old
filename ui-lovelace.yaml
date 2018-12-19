@@ -28,28 +28,18 @@ views:
         tap_action: toggle
       - type: vertical-stack
         cards:
-        - type: horizontal-stack
-          cards:
-          - type: light
-            entity: light.dkitchen_pendants
-            name: Island Lights
-          - type: light
-            entity: light.dkitchen_recessed
-            name: Kitchen Recessed
-          - type: light
-            entity: light.dkitchen_recessed_solo
-            name: Range Accent
-        - type: glance
-          name: Kitchen Accents
+        - type: entities
+          title: Kitchen
           entities:
-            - entity: switch.ovent_cabinet_top
-              name: Cabinet Lights
-              tap_action: toggle
-              icon: mdi:lightbulb
-            - entity: switch.ovent_cabinet_bottom
-              name: Range Vent
-              tap_action: toggle
-              icon: mdi:power-socket-us
+          - entity: group.kitchen_recessed
+            name: Recessed Lights
+            icon: mdi:lightbulb
+          - entity: light.dkitchen_pendants
+            name: Pendants
+            icon: mdi:ceiling-light
+          - entity: switch.ovent_cabinet_top
+            name: Cabinet Lights
+            icon: mdi:weather-sunset-down
       - type: horizontal-stack
         cards:
           - type: thermostat
@@ -68,6 +58,7 @@ views:
             #     name: Master Bedroom
             #     icon: mdi:video-switch
             image: /local/images/denon_avr-x4000.jpg
+            aspect_ratio: 1.78
           # - type: entities
             entities:
               - entity: media_player.denon_zone_2
@@ -147,3 +138,17 @@ views:
 
       # - type: iframe
       #   url: https://app.rach.io
+  - title: Card Testing
+    cards:
+      - type: entities
+        entities:
+          - entity: group.kitchen_recessed
+            name: Recessed Lights
+            icon: mdi:lightbulb
+          - entity: light.dkitchen_pendants
+            name: Pendants
+            icon: mdi:ceiling-light
+          - entity: switch.ovent_cabinet_top
+            name: Accent Lighting
+            icon: mdi:weather-sunset-down
+        title: Kitchen
