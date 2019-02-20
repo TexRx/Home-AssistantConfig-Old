@@ -6,6 +6,9 @@ homeassistant:
   time_zone: !secret home_timezone
   customize: !include customize.yaml
 
+# new required configuration value - Feb 2019
+system_health:
+
 # as of Home assistant 0.84.2, we need to set the lovelace mode to yaml
 # because it is now a static html file by default
 lovelace:
